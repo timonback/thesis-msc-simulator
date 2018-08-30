@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="static/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="static/js/button-checkbox.js" type="text/javascript"></script>
+    <script src="static/js/chart.bundle.js" type="text/javascript"></script>
+    <script src="static/js/bootstrap.min.js" type="text/javascript"></script>
+    <link href="static/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Simulator</h1>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <canvas id="canvas_chart"></canvas>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <canvas id="canvas_chart_instances"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <form onsubmit="VisualizationModule.submitForm(true); return false;">
+                <div class="form-row">
+                    <div class="col text-left">
+                        <button type="button" id="button_less_vms" class="btn btn-primary">< Less VMs</button>
+                    </div>
+                    <div class="col text-center">
+                        <button type="button" id="button_cheapest" class="btn btn-info">Cheapest</button>
+                    </div>
+                    <div class="col text-right">
+                        <button type="button" id="button_more_vms" class="btn btn-primary">More VMs ></button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="info_vms">Amount VMs</label>
+                        <input type="text" id="info_vms" class="form-control" readonly>
+                    </div>
+                    <div class="col">
+                        <label for="info_price">Price</label>
+                        <input type="text" id="info_price" class="form-control" readonly>
+                    </div>
+                    <div class="col">
+                        <label for="info_set_vm">Quick Set VMs</label>
+                        <input type="text" id="info_set_vm" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label for="range_duration">Request duration is s</label>
+                        <input type="number" id="range_duration" class="form-control" value="5" step="0.1"
+                               onchange="VisualizationModule.submitForm()">
+                    </div>
+
+                    <div class="col form-group">
+                        <label for="range_memory">Memory in MB</label>
+                        <select id="range_memory" class="form-control" onchange="VisualizationModule.submitForm()">
+                            <option value="128" selected>128</option>
+                            <option value="256">256</option>
+                            <option value="512">512</option>
+                            <option value="1024">1024</option>
+                            <option value="2048">2048</option>
+                        </select>
+                    </div>
+
+                    <div class="col form-group">
+                        <label for="range_test_length">Test length in s</label>
+                        <input type="number" id="range_test_length" class="form-control" value="3600"
+                               onchange="VisualizationModule.submitForm()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="range_function">Load distribution</label>
+                        <select id="range_function" class="form-control" onchange="VisualizationModule.submitForm()">
+                            <option value="constant">Constant</option>
+                            <option value="ndist" selected>Normal distribution</option>
+                            <option value="sawtooth">Sawtooth</option>
+                            <option value="sinusoid">Sinusoid</option>
+                            <option value="square">Square</option>
+                            <option value="triangle">Triangle</option>
+                        </select>
+                    </div>
+                    <div class="form-group col">
+                        <label for="range_altitude">Altitude / Sigma</label>
+                        <input type="number" id="range_altitude" class="form-control" min="0"
+                               value="900" onchange="VisualizationModule.submitForm()">
+                    </div>
+                    <div class="form-group col">
+                        <label for="range_spacing">Spacing</label>
+                        <input type="number" id="range_spacing" class="form-control" min="0" value="3600"
+                               onchange="VisualizationModule.submitForm()">
+                    </div>
+                    <div class="form-group col">
+                        <label for="range_requests"># Requests</label>
+                        <input type="number" id="range_requests" class="form-control" min="1" value="3600"
+                               onchange="VisualizationModule.submitForm()">
+                    </div>
+                    <div class="form-group col">
+                        <label for="range_spikes"># Spikes</label>
+                        <input type="number" id="range_spikes" class="form-control" min="0.1" value="1" step="0.1"
+                               onchange="VisualizationModule.submitForm()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col text-right">
+                        <span class="button-checkbox">
+                            <button type="button" class="btn" data-color="primary">
+                                <input type="checkbox" id="instant_update"
+                                       onchange="VisualizationModule.submitForm()" checked/>
+                                Live-update
+                            </button>
+                        </span>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+
+                <div id="modal_loading" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info">
+                                New simulation requested
+                            </div>
+                            <div class="modal-body">
+                                New simulation is being calculated.<br/>
+
+                                This can take some minutes...
+                                <div class="progress">
+                                    <div id="update_progress"
+                                         class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-6 col-md-12">
+            <div>
+                <canvas id="canvas_chart_optimal"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  const ChartModule = (function () {
+    const self = {};
+
+    self.chartColors = {
+      "red": "rgb(255, 99, 132)",
+      "orange": "rgb(255, 159, 64)",
+      "yellow": "rgb(255, 205, 86)",
+      "green": "rgb(75, 192, 192)",
+      "blue": "rgb(54, 162, 235)",
+      "purple": "rgb(153, 102, 255)",
+      "grey": "rgb(201, 203, 207)"
+    };
+    self.defaultConfig = function (title, axisLabels) {
+      config = {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: []
+        },
+        options: {
+          animation: {
+            duration: 0,
+          },
+          responsive: true,
+          title: {
+            display: true,
+            text: title
+          },
+          tooltips: {
+            position: 'nearest',
+            mode: 'index',
+            intersect: false,
+          },
+          scales: {
+            xAxes: [{
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: axisLabels.x[0]
+              }
+            }],
+            yAxes: [
+              {
+                display: true,
+                position: 'left',
+                id: 'y-axis-1',
+                ticks: {
+                  beginAtZero: true
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: axisLabels.y[0]
+                },
+              }
+            ]
+          },
+        }
+      };
+      if (axisLabels.y[1] !== undefined)
+        config.options.scales.yAxes.push({
+          display: true,
+          gridLines: {
+            drawOnChartArea: false, // only want the grid lines for one axis to show up
+          },
+          position: 'right',
+          id: 'y-axis-2',
+          ticks: {
+            beginAtZero: true
+          },
+          scaleLabel: {
+            display: true,
+            labelString: axisLabels.y[1]
+          },
+          //type: 'logarithmic',
+        });
+      return config;
+    };
+
+    self.set_dataset = function (config, index, data, label, secondary_y_axis) {
+      const y_axis_id = secondary_y_axis ? 'y-axis-2' : 'y-axis-1';
+      const color_keys = Object.keys(self.chartColors);
+      config.data.datasets[index] = {
+        label: label,
+        fill: false,
+        backgroundColor: self.chartColors[color_keys[index % color_keys.length]],
+        data: data,
+        yAxisID: y_axis_id,
+      };
+      // Fix to show points that are otherwise on the border and not shown
+      if (data !== undefined) {
+        const max_value = Math.floor(Math.max(...data)) + 1;
+        secondary_y_axis = secondary_y_axis * 1;
+        if (config.options.scales.yAxes[secondary_y_axis].ticks.max === undefined) {
+          config.options.scales.yAxes[secondary_y_axis].ticks.max = max_value
+        } else {
+          config.options.scales.yAxes[secondary_y_axis].ticks.max =
+            Math.max(config.options.scales.yAxes[secondary_y_axis].ticks.max,
+              max_value);
+        }
+      }
+    };
+
+    self.create = function (ele, configuration) {
+      const config = self.defaultConfig(configuration.title, configuration.labels);
+      config.data.labels = configuration.data.x;
+      configuration.data.y[0].forEach(function (dataset, index) {
+        self.set_dataset(config, index, dataset.data, dataset.label, false)
+      });
+      const index_offset = config.data.datasets.length;
+      configuration.data.y[1].forEach(function (dataset, index) {
+        self.set_dataset(config, index_offset + index, dataset.data, dataset.label, true)
+      });
+      return new Chart(ele, config);
+    };
+
+    return self;
+  }());
+
+  const SimulationDataModule = (function () {
+    const self = {};
+    self.data = undefined;
+
+    self.getRequests = function () {
+      return self.data.requests;
+    };
+    self.getSimulations = function () {
+      return self.data.simulations;
+    };
+    self.getSimulation = function (index) {
+      if (index === undefined) {
+        const indices = Object.keys(self.data.simulations);
+        index = indices[indices.length - 1];
+      }
+      return self.data.simulations[index];
+    };
+    self.getSimulationCosts = function () {
+      const prices = {};
+      for (const key in self.data.simulations) {
+        if (!self.data.simulations.hasOwnProperty(key)) continue;
+        prices[self.data.simulations[key].total_cost * 1] = key;
+      }
+      return prices;
+    };
+    self.getValidIndex = function () {
+      const indices = Object.keys(self.data.simulations);
+      return indices[indices.length - 1];
+    };
+
+    self.set = function (data, callback) {
+      self.data = JSON.parse(data);
+
+      // Load the extra simulation data
+      const promises = [];
+      Object.keys(self.data.simulations).forEach(function (idx) {
+        const ele = self.data.simulations[idx];
+        const url = "simulations/" + ele;
+        console.log('Loading data for vm ' + idx + '... (' + url + ')');
+        const promise = $.getJSON(url, {}, function (json) {
+          self.data.simulations[idx] = json;
+        });
+        promises.push(promise);
+      });
+
+      const AfterAllRequests = $.Deferred().done(function () {
+        if (callback !== undefined) {
+          console.log('All simulation resources were loaded successfully.');
+          callback();
+        }
+      });
+      $.when.apply($, promises).done(function () {
+        AfterAllRequests.resolve();
+      }).fail(function () {
+        console.warn("Some GET(s) failed... Show as much as possible anyway.");
+        AfterAllRequests.resolve();
+      });
+    };
+
+    return self;
+  })();
+
+  const chart1Ele = document.getElementById('canvas_chart');
+  const chart2Ele = document.getElementById('canvas_chart_instances');
+  const chart3Ele = document.getElementById('canvas_chart_optimal');
+  const SimulationChartModule = (function (chart1Ele, chart2Ele, chart3Ele, chartModule, dataModule) {
+    const self = {};
+    self.chartModule = chartModule;
+    self.dataModule = dataModule;
+
+    const charts = [
+      {
+        chart: undefined,
+        domElement: chart1Ele
+      },
+      {
+        chart: undefined,
+        domElement: chart2Ele
+      },
+      {
+        chart: undefined,
+        domElement: chart3Ele
+      },
+    ];
+
+    self.updateCharts = function (index = undefined) {
+      console.log(`Render for ${index} VMs`);
+
+      const simulationData = self.dataModule.getSimulation(index);
+
+      const x_axis = Object.keys(simulationData.cost_steps);
+      const cost_steps = simulationData.cost_steps;
+      const instances = simulationData.instances_steps;
+      const instances_vm = [];
+      const instances_faas = [];
+      let instances_vm_counter = 0;
+      let instances_faas_counter = 0;
+      simulationData.instances.forEach(el => {
+        instances_faas_counter += el.filter(x => x.type.value === 0).length;
+        instances_vm_counter += el.filter(x => x.type.value === 1).length;
+
+        instances_faas.push(instances_faas_counter);
+        instances_vm.push(instances_vm_counter);
+      });
+
+      const requests = self.dataModule.getRequests().map(x => x.length);
+
+      const vms = Object.keys(self.dataModule.getSimulations());
+      const costs = vms.map(function (x) {
+        const entry = self.dataModule.getSimulation(x);
+        const cost_steps = entry.cost_steps;
+        return cost_steps[cost_steps.length - 1];
+      });
+
+      // Cost and instances chart
+      {
+        const data = {
+          title: 'Cost over time',
+          labels: {
+            x: ['Time in seconds'],
+            y: ['Cost in USD', '# Instances']
+          },
+          data: {
+            x: x_axis,
+            y: [
+              [
+                {data: cost_steps, label: 'Total costs'}
+              ],
+              [
+                {data: instances, label: 'Total instances'},
+                {data: instances_vm, label: 'VM instances'},
+                {data: instances_faas, label: 'FaaS instances'}
+              ]
+            ]
+          }
+        };
+        if (charts[0].chart !== undefined) {
+          charts[0].chart.destroy();
+        }
+        charts[0].chart = ChartModule.create(charts[0].domElement.getContext('2d'), data);
+      }
+      // Load (Requests per simulator step) chart
+      {
+        const data = {
+          title: 'Load',
+          labels: {
+            x: ['Time in seconds'],
+            y: ['New requests']
+          },
+          data: {
+            x: x_axis,
+            y: [
+              [
+                {data: requests, label: 'New requests'}
+              ],
+              []
+            ]
+          }
+        };
+        if (charts[1].chart !== undefined) {
+          charts[1].chart.destroy();
+        }
+        charts[1].chart = ChartModule.create(charts[1].domElement.getContext('2d'), data);
+      }
+      // Pareto optimal chart
+      {
+        const data = {
+          title: 'Pareto optimal cost',
+          labels: {
+            x: ['Amount of VMs'],
+            y: ['Price in USD']
+          },
+          data: {
+            x: vms,
+            y: [
+              [
+                {data: costs, label: 'Price'}
+              ],
+              []
+            ]
+          }
+        };
+        if (charts[2].chart !== undefined) {
+          charts[2].chart.destroy();
+        }
+        charts[2].chart = ChartModule.create(charts[2].domElement.getContext('2d'), data);
+      }
+    };
+
+    self.update = function (data) {
+      self.data = data;
+      self.updateCharts();
+    };
+
+    return self;
+  })(chart1Ele, chart2Ele, chart3Ele, ChartModule, SimulationDataModule);
+
+  const VisualizationModule = (function (simulationModule, simulationDataModule) {
+    const self = {};
+    self.simulationModule = simulationModule;
+    self.dataModule = simulationDataModule;
+
+    self.submitForm = function (forced = false) {
+      if (forced === false && !$('#instant_update').is(':checked')) {
+        return;
+      }
+
+      console.log(`Requesting the API for (changed) form values`);
+
+      $('#update_progress').css('width', '50%');
+      const modal = $("#modal_loading");
+      modal.modal('show');
+
+      $.getJSON("/api/simulator",
+        {
+          load: $("#range_function").val(),
+          memory: $("#range_memory").val(),
+          duration: $("#range_duration").val(),
+          altitude: $("#range_altitude").val(),
+          spacing: $("#range_spacing").val(),
+          test_duration: $("#range_test_length").val(),
+          // Additional for Normal distribution
+          num_spikes: $("#range_spikes").val(),
+          num_requests: $("#range_requests").val(),
+        },
+        function (json) {
+          console.log(`API has answered.`);
+
+          $('#update_progress').css('width', '75%');
+
+          self.dataModule.set(json, function () {
+            // Callback after all data is loaded.
+            $('#update_progress').css('width', '90%');
+
+            self.updateForm();
+            self.updateUi();
+            self.updateUiCheapestButton();
+
+            modal.modal('hide');
+          });
+        });
+    };
+
+    self.updateForm = function () {
+      const ele_spikes = $("#range_spikes");
+      const ele_num_requests = $("#range_requests");
+
+      const load = $("#range_function").val();
+      if (load === 'ndist') {
+        ele_spikes.attr('disabled', false);
+        ele_num_requests.attr('disabled', false);
+      } else {
+        ele_spikes.attr('disabled', true);
+        ele_num_requests.attr('disabled', true);
+      }
+
+      const num_requests = self.dataModule.getRequests().map(x => x.length).reduce((a, b) => a + b, 0);
+      ele_num_requests.val(num_requests);
+    };
+
+    self.updateUi = function (num_vms) {
+      if (num_vms === undefined) {
+        num_vms = self.dataModule.getValidIndex();
+      }
+      self.simulationModule.updateCharts(num_vms);
+
+      const costs = self.dataModule.getSimulation(num_vms).cost_steps;
+      const total_price = costs[costs.length - 1];
+      $('#info_price').val(total_price);
+      $('#info_vms').val(num_vms);
+      $('#info_set_vm')
+        .val(num_vms)
+        .off().on("change", function () {
+        self.updateUi($(this).val())
+      });
+
+      self.updateUiButtons(num_vms);
+    };
+
+    self.updateUiButtons = function (num_vms) {
+      num_vms = num_vms * 1;
+      const disable_less_vm = (self.dataModule.getSimulation(num_vms - 1) === undefined);
+      const disable_more_vm = (self.dataModule.getSimulation(num_vms + 1) === undefined);
+      $('#button_less_vms')
+        .prop('disabled', disable_less_vm)
+        .text('< Less VMs (' + (num_vms - 1) + ')')
+        .off().on("click", function () {
+        self.updateUi(num_vms - 1);
+      });
+      $('#button_more_vms')
+        .prop('disabled', disable_more_vm)
+        .text('More VMs (' + (num_vms + 1) + ') >')
+        .off().on("click", function () {
+        self.updateUi(num_vms + 1);
+      });
+    };
+
+    self.updateUiCheapestButton = function () {
+      const prices = self.dataModule.getSimulationCosts();
+      const price_lowest = Math.min(... Object.keys(prices));
+      const num_vm = prices[price_lowest];
+      $('#button_cheapest')
+        .text('Cheapest (' + num_vm + ')')
+        .off().on('click', function () {
+        self.updateUi(num_vm);
+      });
+    };
+
+    return self;
+  })(SimulationChartModule, SimulationDataModule);
+
+  window.onload = function () {
+    // FROM: https://bootsnipp.com/snippets/featured/jquery-checkbox-buttons
+    $('.button-checkbox').each(function () {
+      // Settings
+      const $widget = $(this),
+        $button = $widget.find('button'),
+        $checkbox = $widget.find('input:checkbox'),
+        color = $button.data('color'),
+        settings = {
+          on: {
+            icon: 'glyphicon glyphicon-check'
+          },
+          off: {
+            icon: 'glyphicon glyphicon-unchecked'
+          }
+        };
+
+      // Event Handlers
+      $button.on('click', function () {
+        $checkbox.prop('checked', !$checkbox.is(':checked'));
+        $checkbox.triggerHandler('change');
+        updateDisplay();
+      });
+      $checkbox.on('change', function () {
+        updateDisplay();
+      });
+
+      // Actions
+      function updateDisplay() {
+        const isChecked = $checkbox.is(':checked');
+
+        // Set the button's state
+        $button.data('state', (isChecked) ? "on" : "off");
+
+        // Set the button's icon
+        $button.find('.state-icon')
+          .removeClass()
+          .addClass('state-icon ' + settings[$button.data('state')].icon);
+
+        // Update the button's color
+        if (isChecked) {
+          $button
+            .removeClass('btn-default')
+            .addClass('btn-' + color + ' active');
+        }
+        else {
+          $button
+            .removeClass('btn-' + color + ' active')
+            .addClass('btn-default');
+        }
+      }
+
+      // Initialization
+      function init() {
+        updateDisplay();
+        // Inject the icon if applicable
+        if ($button.find('.state-icon').length === 0) {
+          $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
+        }
+      }
+
+      init();
+    });
+
+    VisualizationModule.submitForm();
+  };
+</script>
+
+</body>
+</html>

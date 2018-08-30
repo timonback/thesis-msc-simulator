@@ -1,0 +1,17 @@
+.idea
+*.iml
+
+dist
+.eggs
+*.egg-info
+__pycache__
+/virtualenv
+
+/archive
+/images/*.png
+
+/*.log
+
+/.coverage
+/htmlcov
+/profiler.*

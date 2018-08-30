@@ -1,0 +1,41 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          command: |
+            python3 -m virtualenv virtualenv
+            . virtualenv/bin/activate
+            python3 setup.py install
+      - save_cache:
+          key: deps-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "virtualenv"
+
+      - run:
+          command: |
+            . virtualenv/bin/activate
+            python3 setup.py test
+      - store_artifacts:
+          path: htmlcov/
+          destination: coverage
+
+      - run:
+          command: |
+            . virtualenv/bin/activate
+            python3 ./util/analyze_dmp.py profiler.dmp profiler.log
+      - store_artifacts:
+          path: profiler.log
+          destination: profiler.log
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

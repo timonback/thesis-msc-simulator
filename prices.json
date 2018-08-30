@@ -1,0 +1,227 @@
+[
+  {
+    "comment": "Using the data from AWS EC2",
+    "billing_unit_steps": 3600,
+    "billing_unit_max_comment": "artificial one hour to keep complexity low",
+    "billing_unit_max": 3600,
+    "dynamic_duration": false,
+    "type": "VM",
+    "configurations": [
+      {
+        "type": "m5.xlarge",
+        "memory": 16384,
+        "cost": 0.192
+      }
+    ],
+    "configuration_others": [
+      {
+        "type": "t2.nano",
+        "memory": 512,
+        "cost": 0.0058
+      },
+      {
+        "type": "t2.micro",
+        "memory": 1024,
+        "cost": 0.0116
+      },
+      {
+        "type": "t2.small",
+        "memory": 2048,
+        "cost": 0.023
+      }
+    ]
+  },
+  {
+    "comment": "Using the data from AWS Lambda",
+    "billing_unit_steps": 0.1,
+    "billing_unit_max": 600,
+    "dynamic_duration": true,
+    "type": "FaaS",
+    "configurations": [
+      {
+        "memory": 128,
+        "cost": 0.000000208
+      },
+      {
+        "memory": 192,
+        "cost": 0.000000313
+      },
+      {
+        "memory": 256,
+        "cost": 0.000000417
+      },
+      {
+        "memory": 320,
+        "cost": 0.000000521
+      },
+      {
+        "memory": 384,
+        "cost": 0.000000625
+      },
+      {
+        "memory": 448,
+        "cost": 0.000000729
+      },
+      {
+        "memory": 512,
+        "cost": 0.000000834
+      },
+      {
+        "memory": 576,
+        "cost": 0.000000938
+      },
+      {
+        "memory": 640,
+        "cost": 0.000001042
+      },
+      {
+        "memory": 704,
+        "cost": 0.000001146
+      },
+      {
+        "memory": 768,
+        "cost": 0.000001250
+      },
+      {
+        "memory": 832,
+        "cost": 0.000001354
+      },
+      {
+        "memory": 896,
+        "cost": 0.000001459
+      },
+      {
+        "memory": 960,
+        "cost": 0.000001563
+      },
+      {
+        "memory": 1024,
+        "cost": 0.000001667
+      },
+      {
+        "memory": 1088,
+        "cost": 0.000001771
+      },
+      {
+        "memory": 1152,
+        "cost": 0.000001875
+      },
+      {
+        "memory": 1216,
+        "cost": 0.000001980
+      },
+      {
+        "memory": 1280,
+        "cost": 0.000002084
+      },
+      {
+        "memory": 1344,
+        "cost": 0.000002188
+      },
+      {
+        "memory": 1408,
+        "cost": 0.000002292
+      },
+      {
+        "memory": 1472,
+        "cost": 0.000002396
+      },
+      {
+        "memory": 1536,
+        "cost": 0.000002501
+      },
+      {
+        "memory": 1600,
+        "cost": 0.000002605
+      },
+      {
+        "memory": 1664,
+        "cost": 0.000002709
+      },
+      {
+        "memory": 1728,
+        "cost": 0.000002813
+      },
+      {
+        "memory": 1792,
+        "cost": 0.000002917
+      },
+      {
+        "memory": 1856,
+        "cost": 0.000003021
+      },
+      {
+        "memory": 1920,
+        "cost": 0.000003126
+      },
+      {
+        "memory": 1984,
+        "cost": 0.000003230
+      },
+      {
+        "memory": 2048,
+        "cost": 0.000003334
+      },
+      {
+        "memory": 2112,
+        "cost": 0.000003438
+      },
+      {
+        "memory": 2176,
+        "cost": 0.000003542
+      },
+      {
+        "memory": 2240,
+        "cost": 0.000003647
+      },
+      {
+        "memory": 2304,
+        "cost": 0.000003751
+      },
+      {
+        "memory": 2368,
+        "cost": 0.000003855
+      },
+      {
+        "memory": 2432,
+        "cost": 0.000003959
+      },
+      {
+        "memory": 2496,
+        "cost": 0.000004063
+      },
+      {
+        "memory": 2560,
+        "cost": 0.000004168
+      },
+      {
+        "memory": 2624,
+        "cost": 0.000004272
+      },
+      {
+        "memory": 2688,
+        "cost": 0.000004376
+      },
+      {
+        "memory": 2752,
+        "cost": 0.000004480
+      },
+      {
+        "memory": 2816,
+        "cost": 0.000004584
+      },
+      {
+        "memory": 2880,
+        "cost": 0.000004688
+      },
+      {
+        "memory": 2944,
+        "cost": 0.000004793
+      },
+      {
+        "memory": 3008,
+        "cost": 0.000004897
+      }
+    ]
+  }
+]
