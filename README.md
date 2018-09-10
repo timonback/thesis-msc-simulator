@@ -21,7 +21,7 @@ Run `python3 serve.py`
 
 Then open `http://localhost:8888/index.html`
 
-![Screenshot](../blob/master/README_screenshot.png?raw=true)
+![Screenshot](../master/README_screenshot.png?raw=true)
 
 ## Tests
 
