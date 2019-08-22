@@ -30,6 +30,9 @@ class Simulator:
         :return: The SimulatorResult as well as the recorded requests
         """
         history = list()
+        instances = list()
+        queued = list()
+        requests = list()
 
         if load_generator is None:
             load_generator = Loads.get_load(self.config)
@@ -47,12 +50,12 @@ class Simulator:
             logger.debug('Step {step}: {instances} new instance(s) were added'.
                          format(step=i, instances=len(new_instances)))
 
-            history.append({
-                'instances': new_instances,
-                'queued': self.world.get_queued(),
-                'requests': requests
-            })
-        return self._gen_result(history)
+            instances.append(new_instances)
+            queued.append(self.world.get_queued())
+            requests.append(requests)
+
+        result = SimulatorResult(instances, queued)
+        return result, requests
 
     def _run_step(self, step: int, requests_amount: int) -> (list, list):
         """

@@ -32,7 +32,8 @@ class InstanceCreatorVm(InstanceCreator):
         """
         unhandable_requests = list()
         unhandled_requests = self.queued
-        [unhandled_requests.append(item) for item in requests]
+        #[unhandled_requests.append(item) for item in requests]
+        unhandled_requests.extend(requests)
         if len(unhandled_requests) is 0:
             return list()
 
@@ -47,8 +48,9 @@ class InstanceCreatorVm(InstanceCreator):
         cost, memory, btu, dynamic = self.pricing.get_price(memory_needed)
 
         new_instances = self._ensure_min_instances(provisioned, start, btu, memory, cost)
-        for new_instance in new_instances:
-            provisioned.append(new_instance)
+        """for new_instance in new_instances:
+            provisioned.append(new_instance)"""
+        provisioned.extend(new_instances)
         active = self._active_instances_at(start, provisioned)
 
         # let provision instances handle the requests
@@ -113,10 +115,12 @@ class InstanceCreatorVm(InstanceCreator):
         return new_instances
 
     def _rebuild_queue(self, unhandled_requests):
-        self.queued = list()
+        """self.queued = list()
         for request in unhandled_requests:
             self.queued.append(request)
-        logger.debug('The queue has {len} items now'.format(len=len(self.queued)))
+        logger.debug('The queue has {len} items now'.format(len=len(self.queued)))"""
+        self.queued.clear()
+        self.queued.extend(unhandled_requests)  
 
     def _active_instances_at(self, timestamp: int, instances: list) -> list:
         """

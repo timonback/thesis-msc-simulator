@@ -8,23 +8,23 @@ class Configuration:
     def __init__(self):
         # Timing limits of the simulation
         self.simulation_start = 0  # in seconds
-        self.simulation_end = 3600  # in seconds
+        self.simulation_end = 60  # in seconds
 
         # VM configuration
         """Amount of parallel request. Related to cores per VM"""
-        self.vm_parallel = 4
+        self.vm_parallel = 60
         self.vm_scaling_degradation = 0.00  # 5 percent degradation -> 0.05
         self.vm_min_instances = 0
         self.vm_auto_scaling = True
 
         # FaaS
         """Performance factor y = a + m * log(<memory in MB>)"""
-        self.faas_performance_a = 49.61
-        self.faas_performance_m = -6.49
+        self.faas_performance_a = 2.2157
+        self.faas_performance_m = -0.3002
 
         # Request configuration
-        self.request_duration = 2.055  # in seconds
-        self.request_memory = 112  # in MB
+        self.request_duration = 21.41217  # in seconds
+        self.request_memory = 229  # in MB
 
         # random request generator
         self.request_generator_seed = 10  # seed for the random request generator
@@ -39,13 +39,13 @@ class Configuration:
         self.load_name = None
         self.load_altitude = 1
         self.load_spacing = 3600
-        self.load_num_requests = 10800
+        self.load_num_requests = 10087
         self.load_num_spikes = 1
 
         # persist
         self.archive_folder = 'archive/'
         self.plotting_folder = 'images/'
-        self.plotting = False
+        self.plotting = True
 
     def get_ident(self) -> typing.Dict[str, str]:
         diff_r = str(self.faas_performance_a) + '-' + str(self.faas_performance_m)
