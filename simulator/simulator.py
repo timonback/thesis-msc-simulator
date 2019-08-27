@@ -50,12 +50,12 @@ class Simulator:
             logger.debug('Step {step}: {instances} new instance(s) were added'.
                          format(step=i, instances=len(new_instances)))
 
-            instances.append(new_instances)
-            queued.append(self.world.get_queued())
-            requests.append(requests)
-
-        result = SimulatorResult(instances, queued)
-        return result, requests
+            history.append({
+                'instances': new_instances,
+                'queued': self.world.get_queued(),
+                'requests': requests
+            })
+        return self._gen_result(history)
 
     def _run_step(self, step: int, requests_amount: int) -> (list, list):
         """
