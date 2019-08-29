@@ -8,7 +8,7 @@ class Configuration:
     def __init__(self):
         # Timing limits of the simulation
         self.simulation_start = 0  # in seconds
-        self.simulation_end = 60  # in seconds
+        self.simulation_end = 3600  # in seconds
 
         # VM configuration
         """Amount of parallel request. Related to cores per VM"""
@@ -23,7 +23,7 @@ class Configuration:
         self.faas_performance_m = -0.3002
 
         # Request configuration
-        self.request_duration = 21.41217  # in seconds
+        self.request_duration = 21.41247  # in seconds
         self.request_memory = 229  # in MB
 
         # random request generator
@@ -39,7 +39,7 @@ class Configuration:
         self.load_name = None
         self.load_altitude = 1
         self.load_spacing = 3600
-        self.load_num_requests = 10087
+        self.load_num_requests = 10286
         self.load_num_spikes = 1
 
         # persist

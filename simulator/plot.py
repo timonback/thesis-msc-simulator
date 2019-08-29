@@ -66,9 +66,10 @@ def plot(result: SimulatorResult, requests: list, filename: str):
 
     path = '{filename}.png'.format(filename=filename)
     plt.savefig(path)
-    plt.close(path)
 
     # show for debugging
     # plt.show()
+
+    plt.close()
 
     return path
