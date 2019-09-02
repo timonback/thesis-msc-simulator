@@ -1,6 +1,9 @@
 import logging
 import os
-import pickle
+try:
+    import _pickle as pickle
+except:
+    import pickle
 
 from simulator.configuration import Configuration
 from simulator.simulation_result import SimulationResult
@@ -38,6 +41,7 @@ class SimulationArchive:
         index_filename = self._get_archive_folder() + self.FILENAME_JOIN_STR.join(ident) + self.JSON_EXT
         with open(index_filename, 'rb') as json_index_file:
             index = pickle.load(json_index_file)
+            json_index_file.close()
 
             results = SimulationResult(index.config, index.requests)
             for vms, index_result in index.index.items():
@@ -51,6 +55,7 @@ class SimulationArchive:
         with open(self._get_archive_folder() + filename, 'rb') as file:
             # res = file.read().replace('\n', '')
             res = pickle.load(file)
+            file.close()
         return res
 
     def remove(self, config: Configuration):
@@ -79,11 +84,13 @@ class SimulationArchive:
                     try:
                         with open(self._get_archive_folder() + filename, 'wb') as json_file:
                             pickle.dump(result, json_file)
+                            json_file.close()
                         index.index[num_vms] = filename
                     except Exception as e:
                         logger.exception('Error while saving {ident}'.format(ident=ident_vm))
 
                 pickle.dump(index, json_index_file)
+                json_index_file.close()
             os.replace(index_filename_tmp, index_filename)
 
             logger.debug('Archiving {ident} Done'.format(ident=ident))
