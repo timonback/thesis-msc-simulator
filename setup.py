@@ -9,7 +9,7 @@ setup(name='simulation',
       install_requires=[
           'matplotlib',
           'falcon',
-          # 'gunicorn', #Linux
+          'gunicorn', #Linux
           'waitress',  # Windows
           'httpie',  # Nice http client
 
