@@ -1,6 +1,8 @@
 # Cloud Load Simulator
 [![CircleCI](https://circleci.com/gh/timonback/thesis-msc-simulator.svg?style=svg&circle-token=9c777812c1ea59fd70f1eb8092675cfa4657c088)](https://circleci.com/gh/timonback/thesis-msc-simulator)
 
+Demo at: [https://faas-simulator.herokuapp.com/index.html](https://faas-simulator.herokuapp.com/index.html)
+
 It simulates various loads towards a cloud environment.
 Based on the configuration, the cost for handling all requests is calculated.
 In many cases (depending on the load characteristics), the cost can be reduced by moving certain requests to FaaS 
