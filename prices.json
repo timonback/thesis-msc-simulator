@@ -8,10 +8,11 @@
     "type": "VM",
     "configurations": [
       {
-        "type": "m5.xlarge",
+        "type": "t3.xlarge",
         "memory": 16384,
-        "cost": 0.192
+        "cost": 0.1664
       }
+
     ],
     "configuration_others": [
       {
@@ -28,6 +29,11 @@
         "type": "t2.small",
         "memory": 2048,
         "cost": 0.023
+      },
+      {
+        "type": "t3.medium",
+        "memory": 4096,
+        "cost": 0.0416
       }
     ]
   },

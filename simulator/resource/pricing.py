@@ -26,5 +26,16 @@ class Pricing:
         cost = Decimal(conf['cost'])
         return cost, conf['memory'], pricing_config['billing_unit_steps'], pricing_config['dynamic_duration']
 
+    def get_vm_price(self) -> (Decimal, int, int, bool):
+        pricing_config = self.pricing_data[self.index]
+        conf = -1
+        for configuration in pricing_config['configurations']:
+            if conf is -1:
+                conf = configuration
+            elif configuration['memory'] < conf['memory']:
+                conf = configuration
+        cost = Decimal(conf['cost'])
+        return cost, conf['memory'], pricing_config['billing_unit_steps'], pricing_config['dynamic_duration']
+
     def get_max_duration(self) -> int:
         return self.pricing_data[self.index]['billing_unit_max']

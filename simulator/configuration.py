@@ -12,18 +12,26 @@ class Configuration:
 
         # VM configuration
         """Amount of parallel request. Related to cores per VM"""
-        self.vm_parallel = 60
+        self.vm_parallel = 175
         self.vm_scaling_degradation = 0.00  # 5 percent degradation -> 0.05
         self.vm_min_instances = 0
         self.vm_auto_scaling = True
 
         # FaaS
         """Performance factor y = a + m * log(<memory in MB>)"""
-        self.faas_performance_a = 2.2157
-        self.faas_performance_m = -0.3002
+        self.faas_performance_a = 1.5517
+        self.faas_performance_m = -0.210
+
+        self.faas_performance = {
+            128: 19.6545,
+            256: 9.594,
+            512: 4.191,
+            1024: 2.189,
+            2048: 1.078
+        }
 
         # Request configuration
-        self.request_duration = 21.41247  # in seconds
+        self.request_duration = 30.575  # in seconds
         self.request_memory = 229  # in MB
 
         # random request generator
@@ -46,6 +54,17 @@ class Configuration:
         self.archive_folder = 'archive/'
         self.plotting_folder = 'images/'
         self.plotting = True
+
+    def get_faas_request_duration(self, memory: int):
+        if memory in self.faas_performance:
+            return self.faas_performance[memory]
+        else:
+            next_bigger_memory = -1
+            for mem in self.faas_performance:
+                if next_bigger_memory < mem > memory:
+                    next_bigger_memory = mem
+            return mem
+
 
     def get_ident(self) -> typing.Dict[str, str]:
         diff_r = str(self.faas_performance_a) + '-' + str(self.faas_performance_m)

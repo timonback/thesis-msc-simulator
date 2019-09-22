@@ -44,8 +44,8 @@ class InstanceCreatorVm(InstanceCreator):
         unhandled_requests.sort(key=lambda x: x.duration)
 
         memory_max = max(unhandled_requests, key=lambda x: x.memory).memory
-        memory_needed = self.config.vm_parallel * memory_max
-        cost, memory, btu, dynamic = self.pricing.get_price(memory_needed)
+        #memory_needed = self.config.vm_parallel * memory_max
+        cost, memory, btu, dynamic = self.pricing.get_vm_price()
 
         new_instances = self._ensure_min_instances(provisioned, start, btu, memory, cost)
         """for new_instance in new_instances:

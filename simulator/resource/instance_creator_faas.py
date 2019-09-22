@@ -24,10 +24,11 @@ class InstanceCreatorFaaS(InstanceCreator):
                 raise ValueError('Duration ({duration}) exceeds maximum possible duration ({btu})'
                                  .format(duration=duration, btu=self.pricing.get_max_duration()))
 
-            degradation_factor = self._calc_performance_degradation_factor(memory)
-            adjusted_duration = duration * degradation_factor
-            btus = math.ceil(adjusted_duration / btu)
-            instance = Instance(start, adjusted_duration, memory, cost * Decimal(btus))
+            #degradation_factor = self._calc_performance_degradation_factor(memory)
+            #adjusted_duration = duration * degradation_factor
+            faas_duration = self.config.get_faas_request_duration(memory)
+            btus = math.ceil(faas_duration / btu)
+            instance = Instance(start, faas_duration, memory, cost * Decimal(btus))
             instances.append(instance)
         return instances
 
