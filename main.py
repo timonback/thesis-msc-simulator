@@ -13,23 +13,11 @@ register_profiling_atexit()
 def main():
     setup_logging('main.log', level=logging.INFO)
 
-    # use-case configuration
-    param = 131072
-    request_memory = 229
-    vm_request_duration = 30575.03 / 1000  # in seconds
-
     # prepare the simulation
     config = Configuration()
     runner = SimulationRunner(config)
 
-    config.load_name = 'ndist'
-    config.load_spacing = 3600
-    config.load_num_requests = 36000  # only relevant for ndist load
-    config.simulation_end = 3600
-    config.request_memory = request_memory
-    config.request_duration = vm_request_duration
-
-    #for load_name in ['constant', 'sawtooth', 'sinusoid', 'square', 'triangle']:
+    # for load_name in ['constant', 'sawtooth', 'sinusoid', 'square', 'triangle']:
     for load_name in ['ndist']:
         config.load_name = load_name
 
@@ -38,7 +26,7 @@ def main():
             writer = csv.writer(csvfile)
             writer.writerow(config.get_ident_keys() + ['vms', 'cost'])
 
-            #for altitude in [1, 2, 4, 8, 16, 32, 64]:
+            # for altitude in [1, 2, 4, 8, 16, 32, 64]:
             for altitude in [700]:
                 config.load_altitude = altitude
 
