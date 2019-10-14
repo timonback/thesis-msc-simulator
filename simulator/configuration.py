@@ -19,6 +19,7 @@ class Configuration:
 
         # FaaS
         """Performance factor y = a + m * log(<memory in MB>)"""
+        """Obsolete - use faas_performance instead"""
         self.faas_performance_a = 1.5517
         self.faas_performance_m = -0.210
 

@@ -33,7 +33,6 @@ class InstanceCreatorVm(InstanceCreator):
         unhandable_requests = list()
         unhandled_requests = self.queued
         [unhandled_requests.append(item) for item in requests]
-        #unhandled_requests.extend(requests)
         if len(unhandled_requests) is 0:
             return list()
 
@@ -44,7 +43,6 @@ class InstanceCreatorVm(InstanceCreator):
         unhandled_requests.sort(key=lambda x: x.duration)
 
         memory_max = max(unhandled_requests, key=lambda x: x.memory).memory
-        #memory_needed = self.config.vm_parallel * memory_max
         cost, memory, btu, dynamic = self.pricing.get_vm_price()
 
         new_instances = self._ensure_min_instances(provisioned, start, btu, memory, cost)
