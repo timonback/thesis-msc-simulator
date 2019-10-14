@@ -8,8 +8,6 @@ class World:
 
     def handle_requests(self, requests: list, timestamp: int):
         new_instances = self.instance_creator.create_instances(self.provisioned[:], timestamp, requests)
-        """for instance in new_instances:
-            self.provisioned.append(instance)"""
         self.provisioned.extend(new_instances)
         return new_instances
 

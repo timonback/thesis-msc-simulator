@@ -104,12 +104,8 @@ class SimulationRunner:
             # remove instance and collect the requests
             unhandled_requests = list()
             for unhandled_request_step in patched_simulator_result.queued:
-                """for unhandled_request in unhandled_request_step:
-                    unhandled_requests.append(unhandled_request)"""
                 unhandled_requests.extend(unhandled_request_step)
             if hasattr(instance, 'requests') is True:
-                """for request in instance.requests:
-                    unhandled_requests.append(request)"""
                 unhandled_requests.extend(instance.requests)
                 for index, instances in enumerate(patched_simulator_result.instances):
                     if instance in instances:
@@ -137,8 +133,6 @@ class SimulationRunner:
     def _generate_instance_replace_order(self, simulator_result: SimulatorResult) -> list:
         instances = list()
         for instances_step in simulator_result.instances:
-            """for instance in instances_step:
-                instances.append(instance)"""
             instances.extend(instances_step)
         instances = sorted(instances, key=lambda x: x.utilization)
         return instances
