@@ -1,5 +1,8 @@
 .idea
 *.iml
+*.csv
+/venv
+/venv3
 
 dist
 .eggs

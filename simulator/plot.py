@@ -70,4 +70,6 @@ def plot(result: SimulatorResult, requests: list, filename: str):
     # show for debugging
     # plt.show()
 
+    plt.close()
+
     return path

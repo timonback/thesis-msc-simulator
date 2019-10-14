@@ -30,6 +30,9 @@ class Simulator:
         :return: The SimulatorResult as well as the recorded requests
         """
         history = list()
+        instances = list()
+        queued = list()
+        requests = list()
 
         if load_generator is None:
             load_generator = Loads.get_load(self.config)
