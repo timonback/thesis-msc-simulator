@@ -10,6 +10,7 @@ This is a Python 3 project that requires the dependencies to be install via `pyt
 (virtualenv is recommended in general).
 
 All of the configuration is done in the `simulator/configuration.py` file.
+A description and an example on how to tune the simulator to a specific application scenario is provided in the [`README_usage_and_tuning_process.md`](https://github.com/search-rug/thesis-msc-simulator/blob/tuningProcess/README_usage_and_tuning_process.md) file.
 
 ## Standalone
 
