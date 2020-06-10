@@ -42,9 +42,7 @@ In each phase, the total execution cost is the sum of individual
 instance costs for VMs and FaaS instances. Pareto optimality is
 subsequently identified by the scenario that results into the minimum
 total cost, and can be easily visualized as discussed next. 
-**For a more
-detailed information about the search strategy and general architecture
-of the tool, the interested reader is referred to.**
+
 
 ## Interface
 ![image](README_usage_tuning_screenshot.png)
@@ -55,7 +53,7 @@ the screenshot above, the
 characteristics of their desired load scenario. The load is
 characterized as a function of amount of requests per time interval.
 Each request has a (mean) duration as well as an upper bound of resource
-consumption, being primary **RAM (\(21\,\)s and \(128\,\)MB** specifically
+consumption, being primary RAM (21 s and 128 MB specifically
 in the figure). This is necessary due to the FaaS billing model of the
 big cloud service providers offerings. The user is required to input the
 mean request duration of the function of interest, as well as the memory
@@ -167,8 +165,7 @@ users to tune it to their particular needs through the
 parameters are provided through its web interface. The most relevant
 parameters of the `configuration.py` file are listed above. The first two
 groups of configuration parameters are defining the timing limits of the
-simulation and the load distribution to be used, as discussed in
-**Section [1.2](#sec:interface).** In combination with a set of auxiliary
+simulation and the load distribution to be used. In combination with a set of auxiliary
 parameters (not shown here) defining whether to plot the generated data
 into an image file and where to store the output, these parameters allow
 the simulator to be run fully automated in script mode, outputting the
@@ -241,13 +238,14 @@ function. However, any function from a similar FaaS-specific benchmark
 like  can be used for this purpose instead. For the configuration of the
 simulation, the obtained performance measurements for FFT with input
 parameter 131072 discrete signals as executed on the different sized
-FaaS offerings of AWS are used as listed in Table [1](#tab:lambda). The
+FaaS offerings of AWS are used as listed in [Table 1](#tab:lambda). The
 maximum memory consumption, as reported by the microbenchmark, was
-measured at **\(229\,\)MB.**
+measured at 229 MB.
 
 
+<a name="tab:lambda">Table 1: </a>Performance measurements on AWS Lambda
 
-| Memory size (\(MB\)) | Mean response time (\(ms\)) |
+| Memory size (MB) | Mean response time (ms) |
 | :------------------: | :-------------------------: |
 |         128          |           19654.5           |
 |         256          |            9594             |
@@ -255,16 +253,13 @@ measured at **\(229\,\)MB.**
 |         1024         |            2189             |
 |         2048         |            1078             |
 
-Performance measurements on AWS Lambda
-
-
 
 For the VM configuration part of the simulation, the relevant parameters
 are the `request_duration` as well as the number of requests that can be
 handled in parallel by a single instance `vm_parallel`. In the
 interest of exploring the effect that the VM offering selection has in
 the performance of the simulated system we chose to deploy the Node.js
-FFT implementation in three different VM types on **AWS EC2, as shown in .**
+FFT implementation in three different VM types on AWS EC2, as shown in [Table 2](#tab:ec2).
 JMeter\[3\] was used to determine the maximum number of requests that
 can be handled in parallel by a VM without causing error responses
 through a simple saturation process by means of a load ramp-up. More
@@ -272,58 +267,34 @@ specifically, JMeter was set up to submit an incrementally increasing
 amount of requests in rounds until the Node.js server responded with
 error messages. The measurements from the last round without errors are
 to be used to configure the relevant parameters of the simulator. The
-ones for the VMs selected in our example are **shown in .** **therefore shows**
+ones for the VMs selected in our example are shown in [Table 3](#tab:ec2Per). 
+The listing in the previous section therefore shows
 the configuration settings for running a simulation using `t3.xlarge`
 VMs in combination with AWS Lambda calls where 256 MB are allocated per
 function.
 
+<a name="tab:ec2">Table 2: </a>AWS EC2 instance details
 
-
-|                 |             |            |             |
-| :-------------: | :---------: | :--------: | :---------: |
 |                 | `t3.medium` | `t3.large` | `t3.xlarge` |
+| :-------------: | :---------: | :--------: | :---------: |
 |      vCPU       |      2      |     2      |      4      |
 | Memory (\(GB\)) |      4      |     8      |     16      |
 |   Price/hour    |   $0.0418   |  $0.0835   |   $0.1670   |
 
-AWS EC2 instance details
 
 
+<a name="tab:ec2Per">Table 3: </a>Performance measurements on AWS EC2
 
-|  |      |             |            |             |
-| :-: | :--: | :---------: | :--------: | :---------: |
-|  |      | `t3.medium` | `t3.large` | `t3.xlarge` |
-|  | min  |    1750     |    1415    |    1499     |
-|  | max  |    41071    |   49582    |    59420    |
-|  | mean |    21413    |   25456    |    30575    |
-|  |  60  |     75      |    175     |             |
+|    | `t3.medium` | `t3.large` | `t3.xlarge` |
+| :--: | :---------: | :--------: | :---------: |
+| Response time (ms) min  |    1750     |    1415    |    1499     |
+| Response time (ms) max  |    41071    |   49582    |    59420    |
+| Response time (ms) mean |    21413    |   25456    |    30575    |
+| Number of requests |  60  |     75      |    175     |             |
 
-Performance measurements on AWS EC2
-
-
-
-|                                                                     |       |       |            |            |       |             |
-| :-----------------------------------------------------------------: | :---: | :---: | :--------: | :--------: | :---: | :---------: |
-|                                                                     |       |       | pure FaaS  |            |       |             |
-| (l)<span>3-4</span> (l)<span>5-5</span> (l)<span>6-7</span> VM size | sigma | \#VMs | Cost (US$) | Cost (US$) | \#VMs | Cost (US$)  |
-|                                                                     |  100  |  55   |   2.2880   |            |   9   | 1.360468224 |
-|                                                                     |  200  |  27   |   1.1232   |            |  17   | 0.951875584 |
-|                                                                     |  400  |  15   |   0.6240   |            |  12   | 0.533227200 |
-|                                                                     |  600  |  10   |   0.4160   |            |   8   | 0.377355616 |
-|                                                                     |  800  |   8   |   0.3328   |            |   6   | 0.290672832 |
-|                                                                     |  100  |  50   |   4.1600   |            |   0   | 1.441152000 |
-|                                                                     |  200  |  26   |   2.1632   |            |   5   | 1.335815264 |
-|                                                                     |  400  |  14   |   1.1648   |            |   8   | 0.911116256 |
-|                                                                     |  600  |   9   |   0.7488   |            |   7   | 0.656779456 |
-|                                                                     |  800  |   7   |   0.5824   |            |   6   | 0.517894944 |
-|                                                                     |  100  |  26   |   4.3264   |            |   0   | 1.441152000 |
-|                                                                     |  200  |  14   |   2.3296   |            |   2   | 1.346610400 |
-|                                                                     |  400  |   7   |   1.1648   |            |   4   | 0.928450112 |
-|                                                                     |  600  |   5   |   0.8320   |            |   3   | 0.685388832 |
-|                                                                     |  800  |   4   |   0.6656   |            |   3   | 0.521537856 |
 
 An interesting observation here is that the measured performance trend
-in **Tables [1](#tab:lambda) and [3](#tab:ec2) is** different for the two
+in Tables [1](#tab:lambda) and [3](#tab:ec2) is different for the two
 deployment scenarios, despite using the same reference function.
 Doubling the amount of allocated memory in Lambda configurations yields
 an improvement of factor 2 in terms of response time. On the other hand,
@@ -347,5 +318,5 @@ results for those scenarios.
 
 2.  <https://github.com/serverless/serverless>
 
-3.  https://jmeter.apache.org
+3.  <https://jmeter.apache.org>
 
